@@ -18,47 +18,100 @@
             margin: 0;
             background-color: #ffffff;
         }
-        .container {
-            text-align: center;
+        .main-container {
             display: flex;
-            
+            flex-direction: column; /* Vertikale Ausrichtung */
+            justify-content: center;
+            align-items: center;
+            gap: 20px; /* Abstand zwischen den Containern */
             width: 100%;
             max-width: 1200px;
         }
+        .top-container {
+            display: flex;
+            justify-content: center; /* Zentriert die Boxen horizontal */
+            gap: 20px; /* Abstand zwischen den Boxen */
+            width: 100%;
+        }
         .link-box {
+            padding: 20px;
             text-align: center;
-            border: black solid;
         }
         .link-box img {
             width: 300px;
             height: auto;
             cursor: pointer;
             margin-bottom: 10px;
+            transition: all 0.3s ease; /* Sanfte Animation beim Hover */
         }
-        h2 {
-            margin-top: 10px;
-            font-size: 1.5rem;
+        /* Vergrößerung der unteren Box */
+        .bottom-box img {
+            width: calc(620px + 20px); /* Bild ist so breit wie die beiden oberen Bilder zusammen + Abstand */
+            height: auto;
+        }
+        /* Bildwechsel bei Hover für Musik und Events */
+        .link-box img.music-events:hover {
+            content: url("{% static 'landing/music_events_hover.png' %}");
+            transform: scale(1.1); /* Vergrößert das Bild leicht */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Fügt einen weichen Schatten hinzu */
+            border: 3px solid black;
+        }
+        /* Bildwechsel bei Hover für den Shop */
+        .link-box img.shirts:hover {
+            content: url("{% static 'landing/shirts_hover.png' %}");
+            transform: scale(1.1); /* Vergrößert das Bild leicht */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Fügt einen weichen Schatten hinzu */
+            border: 3px solid black;
+        }
+        /* Optional: Bildwechsel für Fotos */
+        .bottom-box img:hover {
+            content: url("{% static 'landing/GH.png' %}");
+            transform: scale(1.05); /* Vergrößert das Bild leicht */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            border: 3px solid black;
+        }
+        h1 {
+            font-style: italic;
+            text-align: center;
+            font-size: 3rem;
         }
     </style>
 </head>
 <body>
-    <h1>Willkommen beim Breakfast Kollektiv</h1>
-    <div class="container">
-        <!-- Link zu Musik und Events -->
-        <div class="link-box">
-            <a href="{% url 'musik_events' %}">
-                <img src="{% static 'landing/music_events.png' %}" alt="Musik und Events">
-            </a>
-            <h2>Musik & Events</h2>
+    <h1>BREAKFAST-KOLLEKTIV</h1>
+    
+    <!-- Hauptcontainer -->
+    <div class="main-container">
+        <!-- Container für die ersten beiden Bilder -->
+        <div class="top-container">
+            <!-- Link zu Musik und Events -->
+            <div class="link-box">
+                <a href="{% url 'musik_events' %}">
+                    <img class="music-events" src="{% static 'landing/music_events.png' %}" alt="Musik und Events">
+                </a>
+            </div>
+
+            <!-- Link zum Shop -->
+            <div class="link-box">
+                <a href="{% url 'shop' %}">
+                    <img class="shirts" src="{% static 'landing/shirts.png' %}" alt="Shop">
+                </a>
+            </div>
         </div>
 
-        <!-- Link zum Shop -->
-        <div class="link-box">
-            <a href="{% url 'shop' %}">
-                <img src="{% static 'landing/shirts.png' %}" alt="Shop">
+        <!-- Container für das größere Foto unten -->
+        <div class="link-box bottom-box">
+            <a href="{% url 'galerie' %}">
+                <img class="fotos" src="{% static 'landing/Galerie.png' %}" alt="Fotos">
             </a>
-            <h2>Shop</h2>
         </div>
     </div>
+
+        <!-- Footer-Bereich mit dem Impressum -->
+        <footer>
+            <a href="{% url 'impressum' %}" >Impressum</a>
+        </footer>
+    </body>
+    </html>
 </body>
 </html>

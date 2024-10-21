@@ -10,3 +10,9 @@ def musik_events(request):
 
 def shop(request):
     return render(request, 'landing/shop.html')
+
+def galerie(request):
+    return render(request, 'landing/galerie.html')
+
+def impressum(request):
+    return render(request, 'landing/impressum.html')
