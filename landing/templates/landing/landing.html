@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breakfast Kollektiv</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #ffffff;
+        }
+        .container {
+            text-align: center;
+            display: flex;
+            
+            width: 100%;
+            max-width: 1200px;
+        }
+        .link-box {
+            text-align: center;
+            border: black solid;
+        }
+        .link-box img {
+            width: 300px;
+            height: auto;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        h2 {
+            margin-top: 10px;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Willkommen beim Breakfast Kollektiv</h1>
+    <div class="container">
+        <!-- Link zu Musik und Events -->
+        <div class="link-box">
+            <a href="{% url 'musik_events' %}">
+                <img src="{% static 'landing/music_events.png' %}" alt="Musik und Events">
+            </a>
+            <h2>Musik & Events</h2>
+        </div>
+
+        <!-- Link zum Shop -->
+        <div class="link-box">
+            <a href="{% url 'shop' %}">
+                <img src="{% static 'landing/shirts.png' %}" alt="Shop">
+            </a>
+            <h2>Shop</h2>
+        </div>
+    </div>
+</body>
+</html>
