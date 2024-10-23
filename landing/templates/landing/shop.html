@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            font-weight: bold;
+            text-align: left;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .product-header .total-products {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        /* Grid layout for products */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        /* Styling for each product card */
+        .product-container {
+            background-color: #ffffff;
+            border: 1px solid #eee;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .product-container:hover {
+            transform: translateY(-5px); /* Subtle hover effect */
+        }
+
+        /* Product image */
+        .product-content img {
+            width: 100%;  /* Take full width of the container */
+            height: auto;
+            object-fit: cover;
+        }
+
+        /* Product name and price */
+        .product-details h2 {
+            margin: 10px 0 5px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .price {
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        /* Optional filter or sort options on the right */
+        .filter-options {
+            font-size: 1rem;
+            color: #333;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Shop Title and Filter Bar -->
+    <div class="product-header">
+        <h1>BASIC T-SHIRTS</h1>
+        <div class="total-products">Anzahl Produkte: {{ products.count }}</div>
+    </div>
+
+    <!-- Product grid to display products -->
+    <div class="products-grid">
+        {% for product in products %}
+        <div class="product-container">
+            <!-- Product Image -->
+            <div class="product-content">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            </div>
+
+            <!-- Product Name and Price -->
+            <div class="product-details">
+                <h2>{{ product.name }}</h2>
+                <p class="price">{{ product.price }} €</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

@@ -1,12 +1,122 @@
 <!DOCTYPE html>
+
+{% load static %}
+
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Musik & Events</title>
+    <title>Veranstaltungs Feed</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            font-style: italic;
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 50px;
+        }
+
+        .event-container {
+            display: flex;
+            flex-direction: column;
+            width: 600px;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .event-header {
+            margin-bottom: 10px;
+        }
+
+        .event-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .event-header p {
+            margin: 0;
+            color: #666;
+        }
+
+        .event-content {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px; /* Add some space between content and media */
+        }
+
+        .event-content img {
+            width: 250px;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .event-details {
+            flex: 1;
+        }
+
+        .event-media iframe {
+            width: 100%;
+            height: 300px;
+            border-radius: 5px;
+        }
+
+        /* For SoundCloud iframes */
+        .soundcloud-embed {
+            width: 100%;
+            height: 166px;
+            border: none;
+            margin-top: 10px;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>Musik & Events</h1>
-    <p>Willkommen auf der Musik & Events Seite!</p>
+
+    <h1>BREAKFAST-KOLLEKTIV</h1>
+
+    {% for event in events %}
+    <div class="event-container">
+        <!-- Event Header with Date, Name, and Location -->
+        <div class="event-header">
+            <h2>{{ event.date }} - {{ event.name }}</h2>
+            <p>{{ event.location }}</p>
+        </div>
+
+        <!-- Event Content with Image and Description -->
+        {% if event.image %}
+        <div class="event-content">
+            <img src="{{ event.image.url }}" alt="Event Image">
+            <div class="event-details">
+                <p>{{ event.description }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Embedded Media (YouTube or SoundCloud) -->
+        <div class="event-media">
+            {% if event.youtube_url %}
+            <iframe src="https://www.youtube.com/embed/{{ event.youtube_url|slice:'-11:' }}" frameborder="0" allowfullscreen></iframe>
+            {% endif %}
+            
+            {% if event.soundcloud_url %}
+            <iframe class="soundcloud-embed" scrolling="no" frameborder="no" allow="autoplay" 
+                src="{{ event.soundcloud_url }}"></iframe>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+
 </body>
 </html>
