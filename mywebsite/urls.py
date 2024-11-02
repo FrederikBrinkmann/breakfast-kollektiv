@@ -15,6 +15,8 @@ urlpatterns = [
     path('product/<int:pk>/', views.product_detail, name='product_detail'),  # Product detail page
     path('impressum/', views.impressum, name='impressum'),
     path('galerie/', views.galerie, name='galerie'),
+    path('checkout/', views.checkout, name='checkout'),
+    path('process-checkout/', views.process_checkout, name='process_checkout'),
 ]
 
 if settings.DEBUG:

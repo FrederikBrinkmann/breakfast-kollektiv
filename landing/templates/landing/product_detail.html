@@ -12,38 +12,53 @@
             padding: 20px;
         }
 
+        .product-header {
+            text-align: left;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        .product-header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
         .product-detail-page {
             display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
             gap: 40px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        /* Left Section for Image */
+        /* Image Gallery Section */
         .image-gallery {
             flex: 1;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            max-width: 800px;
+            position: relative;
         }
 
         .image-gallery img {
-            max-width: 100%;
+            width: 100%;
             height: auto;
-            display: none; /* Hide images by default */
+            max-width: 800px;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
 
-        .image-gallery img.active {
-            display: block; /* Show the active image */
-        }
-
-        /* Right Section for Product Info */
+        /* Product Information Section */
         .product-info {
             flex: 1;
             background-color: #ffffff;
             padding: 20px;
             border: 1px solid #eee;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            align-self: flex-start;
         }
 
         .product-info h1 {
@@ -55,25 +70,29 @@
         .price {
             font-size: 1.5rem;
             color: #333;
-            margin-bottom: 10px;
-        }
-
-        .image-switch-buttons {
             margin-bottom: 20px;
+        }
+
+        /* Size Selection Grid */
+        .size-selection {
             display: flex;
-            gap: 10px;
+            gap: 3px;
+            margin-bottom: 20px;
         }
 
-        .image-switch-button {
-            padding: 10px 15px;
+        .size-option {
             border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
             cursor: pointer;
-            background-color: #f0f0f0;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, border-color 0.3s;
+            flex: 1;
         }
 
-        .image-switch-button:hover {
-            background-color: #ddd;
+        .size-option:hover,
+        .size-option.active {
+            background-color: #f0f0f0;
+            border-color: #333;
         }
 
         .buy-button {
@@ -85,8 +104,10 @@
             text-transform: uppercase;
             cursor: pointer;
             border: none;
-            margin-top: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
             width: 100%;
+            font-weight: bold;
         }
 
         .buy-button.sold-out {
@@ -97,66 +118,116 @@
         .description {
             margin-top: 20px;
         }
+
+        /* Drop Menu for Additional Info */
+        .additional-info {
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+
+        .additional-info h3 {
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .additional-info-content {
+            display: none;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .additional-info.open .additional-info-content {
+            display: block;
+        }
     </style>
-    <script>
+     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const frontImage = document.querySelector('.front-image');
-            const backImage = document.querySelector('.back-image');
-            const frontButton = document.querySelector('.front-button');
-            const backButton = document.querySelector('.back-button');
+            // Size selection functionality
+            const sizeOptions = document.querySelectorAll('.size-option');
+            let selectedSize = null;
 
-            // Show front image and hide back image by default
-            frontImage.classList.add('active');
-
-            frontButton.addEventListener('click', () => {
-                frontImage.classList.add('active');
-                backImage.classList.remove('active');
+            sizeOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    sizeOptions.forEach(o => o.classList.remove('active'));
+                    option.classList.add('active');
+                    selectedSize = option.textContent.trim(); // Save selected size
+                    document.getElementById('size-input').value = selectedSize; // Update hidden input
+                });
             });
 
-            backButton.addEventListener('click', () => {
-                backImage.classList.add('active');
-                frontImage.classList.remove('active');
+            // Ensure a size is selected before submitting the form
+            const buyButton = document.querySelector('.buy-button');
+            const form = document.querySelector('#checkout-form');
+
+            buyButton.addEventListener('click', (e) => {
+                if (!selectedSize) {
+                    e.preventDefault(); // Prevent form submission
+                    alert('Bitte wähle eine Größe aus!');
+                    return;
+                }
+                form.submit(); // Submit the form if size is selected
             });
         });
     </script>
 </head>
 <body>
 
+    <!-- Header for the Product Page -->
+    <div class="product-header">
+        <h1>{{ product.name }}</h1>
+    </div>
+
     <div class="product-detail-page">
-        <!-- Left Section: Image Gallery -->
+        <!-- Image Gallery Section -->
         <div class="image-gallery">
             <img src="{{ product.image_front.url }}" alt="{{ product.name }} - Front" class="front-image">
             {% if product.image_back %}
-                <img src="{{ product.image_back.url }}" alt="{{ product.name }} - Back" class="back-image">
+                <img src="{{ product.image_back.url }}" alt="{{ product.name }} - Back" class="back-image" style="display: none;">
             {% endif %}
         </div>
 
-        <!-- Right Section: Product Info -->
+        <!-- Product Info Section -->
         <div class="product-info">
             <h1>{{ product.name }}</h1>
-            <p class="price">{{ product.price }} € <span>inkl. MwSt</span></p>
+            <p class="price">{{ product.price }} €</p>
 
-            <!-- Buttons to Switch Images -->
-            <div class="image-switch-buttons">
-                <button class="image-switch-button front-button">Front</button>
-                <button class="image-switch-button back-button">Back</button>
+            <!-- Size Selection -->
+            <h3>WÄHLE EINE GRÖßE </h3>
+            <div class="size-selection">
+                <div class="size-option">S</div>
+                <div class="size-option">M</div>
+                <div class="size-option">L</div>
+                <div class="size-option">XL</div>
+                <div class="size-option">XXL</div>
             </div>
 
-            <div class="description">
-                <h3>Beschreibung</h3>
-                <p>{{ product.description }}</p>
-            </div>
+            <!-- Checkout Form -->
+            <form id="checkout-form" action="{% url 'checkout' %}" method="get">
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <input type="hidden" id="size-input" name="size" value="">
+                <button type="button" class="buy-button">In den Warenkorb</button>
+            </form>
 
-            <button class="buy-button sold-out">Sold Out</button>
+            <!-- Combined Drop Menu -->
+            <div class="additional-info">
+                <h3>Beschreibung & Versandinformationen <span>+</span></h3>
+                <div class="additional-info-content">
+                    <p>{{ product.description }}</p>
+                    <h4>Versand & Rücksendungen</h4>
+                    <p>Informationen zu Versand und Rücksendungen...</p>
+                </div>
+            </div>
 
             <div class="additional-info">
-                <h3>Versand & Rücksendungen</h3>
-                <p>Informationen zu Versand und Rücksendungen...</p>
-            </div>
-
-            <div class="additional-info">
-                <h3>Contact</h3>
-                <p>Kontaktinformationen...</p>
+                <h3>Kontakt <span>+</span></h3>
+                <div class="additional-info-content">
+                    <p>Kontaktinformationen...</p>
+                </div>
             </div>
         </div>
     </div>
