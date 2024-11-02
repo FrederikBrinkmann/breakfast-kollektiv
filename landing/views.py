@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from landing import views
 from .models import Event
 from.models import Product
@@ -23,3 +23,8 @@ def impressum(request):
 def shop(request):
     products = Product.objects.all()
     return render(request, 'landing/shop.html', {'products': products})
+
+def product_detail(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    return render(request, 'landing/product_detail.html', {'product': product})
+

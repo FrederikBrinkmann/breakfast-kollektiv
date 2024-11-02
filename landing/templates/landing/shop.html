@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 {% load static %}
 
 <html lang="de">
@@ -17,6 +16,7 @@
 
         h1 {
             font-weight: bold;
+            font-style: italic;
             text-align: left;
             font-size: 2rem;
             margin-bottom: 10px;
@@ -32,79 +32,116 @@
         .product-header .total-products {
             color: #666;
             font-size: 1rem;
+            font-style: italic;
         }
 
         /* Grid layout for products */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
         }
 
         /* Styling for each product card */
         .product-container {
             background-color: #ffffff;
             border: 1px solid #eee;
-            padding: 15px;
+            padding: 10px;
             text-align: center;
             transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
         }
 
         .product-container:hover {
-            transform: translateY(-5px); /* Subtle hover effect */
+            transform: translateY(-5px);
         }
 
-        /* Product image */
+        /* Container for images */
+        .product-content {
+            position: relative;
+            width: 100%;
+            padding-top: 100%; /* Maintain a square aspect ratio */
+            overflow: hidden;
+        }
+
         .product-content img {
-            width: 100%;  /* Take full width of the container */
-            height: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Front and Back image behavior */
+        .product-content img.front {
+            opacity: 1;
+        }
+
+        .product-content img.back {
+            opacity: 0;
+        }
+
+        /* Hover effect to show the back image */
+        .product-container:hover .product-content img.front {
+            opacity: 0;
+        }
+
+        .product-container:hover .product-content img.back {
+            opacity: 1;
         }
 
         /* Product name and price */
+        .product-details {
+            margin-top: 10px;
+            text-align: left;
+            width: 100%;
+        }
+
         .product-details h2 {
-            margin: 10px 0 5px;
-            font-size: 1.2rem;
+            margin: 5px 0;
+            font-size: 1rem;
             font-weight: bold;
             color: #333;
         }
 
         .price {
-            font-size: 1.1rem;
-            color: #555;
-        }
-
-        /* Optional filter or sort options on the right */
-        .filter-options {
             font-size: 1rem;
-            color: #333;
-            cursor: pointer;
+            color: #555;
         }
     </style>
 </head>
 <body>
 
-    <!-- Shop Title and Filter Bar -->
+    <!-- Shop Title and Product Count -->
     <div class="product-header">
-        <h1>BASIC T-SHIRTS</h1>
+        <h1>BREAKFAST-KOLLEKTIV T-SHIRTS</h1>
         <div class="total-products">Anzahl Produkte: {{ products.count }}</div>
     </div>
 
     <!-- Product grid to display products -->
     <div class="products-grid">
         {% for product in products %}
-        <div class="product-container">
-            <!-- Product Image -->
+        <a href="{% url 'product_detail' product.pk %}" class="product-container">
+            <!-- Product Images (Front and optionally Back) -->
             <div class="product-content">
-                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                <img src="{{ product.image_front.url }}" alt="{{ product.name }} - Front" class="front">
+                {% if product.image_back %}
+                    <img src="{{ product.image_back.url }}" alt="{{ product.name }} - Back" class="back">
+                {% endif %}
             </div>
-
             <!-- Product Name and Price -->
             <div class="product-details">
                 <h2>{{ product.name }}</h2>
                 <p class="price">{{ product.price }} €</p>
             </div>
-        </div>
+        </a>
         {% endfor %}
     </div>
 

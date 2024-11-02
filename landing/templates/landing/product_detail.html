@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .product-detail-page {
+            display: flex;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Left Section for Image */
+        .image-gallery {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-gallery img {
+            max-width: 100%;
+            height: auto;
+            display: none; /* Hide images by default */
+        }
+
+        .image-gallery img.active {
+            display: block; /* Show the active image */
+        }
+
+        /* Right Section for Product Info */
+        .product-info {
+            flex: 1;
+            background-color: #ffffff;
+            padding: 20px;
+            border: 1px solid #eee;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-info h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .image-switch-buttons {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .image-switch-button {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            transition: background-color 0.3s;
+        }
+
+        .image-switch-button:hover {
+            background-color: #ddd;
+        }
+
+        .buy-button {
+            display: block;
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            padding: 15px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: none;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .buy-button.sold-out {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+
+        .description {
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const frontImage = document.querySelector('.front-image');
+            const backImage = document.querySelector('.back-image');
+            const frontButton = document.querySelector('.front-button');
+            const backButton = document.querySelector('.back-button');
+
+            // Show front image and hide back image by default
+            frontImage.classList.add('active');
+
+            frontButton.addEventListener('click', () => {
+                frontImage.classList.add('active');
+                backImage.classList.remove('active');
+            });
+
+            backButton.addEventListener('click', () => {
+                backImage.classList.add('active');
+                frontImage.classList.remove('active');
+            });
+        });
+    </script>
+</head>
+<body>
+
+    <div class="product-detail-page">
+        <!-- Left Section: Image Gallery -->
+        <div class="image-gallery">
+            <img src="{{ product.image_front.url }}" alt="{{ product.name }} - Front" class="front-image">
+            {% if product.image_back %}
+                <img src="{{ product.image_back.url }}" alt="{{ product.name }} - Back" class="back-image">
+            {% endif %}
+        </div>
+
+        <!-- Right Section: Product Info -->
+        <div class="product-info">
+            <h1>{{ product.name }}</h1>
+            <p class="price">{{ product.price }} € <span>inkl. MwSt</span></p>
+
+            <!-- Buttons to Switch Images -->
+            <div class="image-switch-buttons">
+                <button class="image-switch-button front-button">Front</button>
+                <button class="image-switch-button back-button">Back</button>
+            </div>
+
+            <div class="description">
+                <h3>Beschreibung</h3>
+                <p>{{ product.description }}</p>
+            </div>
+
+            <button class="buy-button sold-out">Sold Out</button>
+
+            <div class="additional-info">
+                <h3>Versand & Rücksendungen</h3>
+                <p>Informationen zu Versand und Rücksendungen...</p>
+            </div>
+
+            <div class="additional-info">
+                <h3>Contact</h3>
+                <p>Kontaktinformationen...</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
