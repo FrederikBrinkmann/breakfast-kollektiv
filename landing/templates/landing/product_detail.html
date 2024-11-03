@@ -14,22 +14,24 @@
 
         .product-header {
             text-align: left;
-            margin-bottom: 40px;
+            margin-bottom: 20px; /* Reduced margin */
             font-style: italic;
         }
 
         .product-header h1 {
-            font-size: 2.5rem;
+            font-size: 3rem; /* Increased font size */
             font-weight: bold;
+            line-height: 1.2; /* Adjusted line height for better spacing */
+            word-break: break-word; /* Ensures text breaks if needed */
         }
 
         .product-detail-page {
             display: flex;
-            justify-content: space-between;
             flex-wrap: wrap;
-            gap: 40px;
+            gap: 20px; /* Reduced gap */
             max-width: 1200px;
             margin: 0 auto;
+            align-items: flex-start;
         }
 
         /* Image Gallery Section */
@@ -38,14 +40,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            max-width: 800px;
+            max-width: 1000px; /* Increased max width */
+            width: 100%;
             position: relative;
         }
 
         .image-gallery img {
             width: 100%;
             height: auto;
-            max-width: 800px;
+            max-width: 1000px; /* Increased max width */
             cursor: pointer;
             transition: transform 0.2s;
         }
@@ -54,17 +57,19 @@
         .product-info {
             flex: 1;
             background-color: #ffffff;
-            padding: 20px;
+            padding: 15px; /* Reduced padding */
             border: 1px solid #eee;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             max-width: 400px;
+            width: 100%;
             align-self: flex-start;
         }
 
         .product-info h1 {
-            font-size: 2rem;
+            font-size: 2.5rem; /* Increased font size */
             font-weight: bold;
             margin-bottom: 10px;
+            line-height: 1.2;
         }
 
         .price {
@@ -144,8 +149,58 @@
         .additional-info.open .additional-info-content {
             display: block;
         }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .product-header h1 {
+                font-size: 2.5rem; /* Adjusted for smaller screens */
+                text-align: center;
+            }
+
+            .product-detail-page {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .product-info {
+                max-width: 100%;
+                margin-top: 20px;
+            }
+
+            .image-gallery {
+                max-width: 100%;
+            }
+
+            .image-gallery img {
+                max-width: 100%;
+                height: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-header h1 {
+                font-size: 2rem;
+                text-align: center;
+            }
+
+            .product-info {
+                padding: 12px; /* Further reduced padding */
+            }
+
+            .buy-button {
+                padding: 12px;
+            }
+
+            .additional-info h3 {
+                font-size: 1rem;
+            }
+
+            .additional-info-content {
+                font-size: 0.85rem;
+            }
+        }
     </style>
-     <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Size selection functionality
             const sizeOptions = document.querySelectorAll('.size-option');
