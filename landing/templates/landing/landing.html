@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-
 {% load static %}
-
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Breakfast Kollektiv</title>
     <style>
+        /* Grundlegende Stile */
         body {
             font-family: Arial, sans-serif;
             display: flex;
@@ -17,101 +16,111 @@
             min-height: 100vh;
             margin: 0;
             background-color: #ffffff;
+            padding: 20px; /* Padding hinzugefügt, um Inhalte auf kleinen Bildschirmen abzuheben */
+        }
+        h1 {
+            font-style: italic;
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
         }
         .main-container {
             display: flex;
-            flex-direction: column; /* Vertikale Ausrichtung */
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 20px; /* Abstand zwischen den Containern */
+            gap: 20px;
             width: 100%;
             max-width: 1200px;
         }
         .top-container {
             display: flex;
-            justify-content: center; /* Zentriert die Boxen horizontal */
-            gap: 20px; /* Abstand zwischen den Boxen */
+            justify-content: center;
+            gap: 20px;
             width: 100%;
+            flex-wrap: wrap; /* Ermöglicht das Umfließen der Boxen bei kleineren Bildschirmen */
         }
         .link-box {
-            padding: 20px;
+            flex: 1;
+            padding: 10px;
             text-align: center;
+            max-width: 400px; /* Erhöht die Max-Breite der Boxen */
         }
         .link-box img {
-            width: 300px;
+            width: 100%; /* Bild füllt die gesamte Box aus */
             height: auto;
             cursor: pointer;
             margin-bottom: 10px;
-            transition: all 0.3s ease; /* Sanfte Animation beim Hover */
+            transition: all 0.3s ease;
         }
-        /* Vergrößerung der unteren Box */
         .bottom-box img {
-            width: calc(620px + 20px); /* Bild ist so breit wie die beiden oberen Bilder zusammen + Abstand */
+            width: 100%; /* Bild füllt die gesamte Breite */
             height: auto;
         }
-        /* Bildwechsel bei Hover für Musik und Events */
-        .link-box img.music-events:hover {
-            content: url("{% static 'landing/music_events_hover.png' %}");
-            transform: scale(1.1); /* Vergrößert das Bild leicht */
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Fügt einen weichen Schatten hinzu */
-            border: 3px solid black;
-        }
-        /* Bildwechsel bei Hover für den Shop */
-        .link-box img.shirts:hover {
-            content: url("{% static 'landing/shirts_hover.png' %}");
-            transform: scale(1.1); /* Vergrößert das Bild leicht */
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Fügt einen weichen Schatten hinzu */
-            border: 3px solid black;
-        }
-        /* Optional: Bildwechsel für Fotos */
+        /* Hover-Effekte */
+        .link-box img.music-events:hover,
+        .link-box img.shirts:hover,
         .bottom-box img:hover {
-            content: url("{% static 'landing/GH.png' %}");
-            transform: scale(1.05); /* Vergrößert das Bild leicht */
+            transform: scale(1.05); /* Vergrößerung bei Hover */
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
             border: 3px solid black;
         }
-        h1 {
-            font-style: italic;
+        /* Responsive Anpassungen für kleinere Bildschirme */
+        @media (max-width: 768px) {
+            .top-container {
+                flex-direction: column; /* Stellt die Bilder untereinander */
+                align-items: center; /* Zentriert die Bilder */
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .link-box {
+                max-width: 350px; /* Verkleinert die Boxen leicht auf mittelgroßen Bildschirmen */
+            }
+        }
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            .link-box {
+                max-width: 300px; /* Verkleinert die Boxen auf kleinen Bildschirmen */
+            }
+        }
+        /* Footer */
+        footer {
+            margin-top: 20px;
             text-align: center;
-            font-size: 3rem;
+        }
+        footer a {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <h1>BREAKFAST-KOLLEKTIV</h1>
-    
-    <!-- Hauptcontainer -->
     <div class="main-container">
-        <!-- Container für die ersten beiden Bilder -->
         <div class="top-container">
-            <!-- Link zu Musik und Events -->
             <div class="link-box">
                 <a href="{% url 'musik_events' %}">
                     <img class="music-events" src="{% static 'landing/music_events.png' %}" alt="Musik und Events">
                 </a>
             </div>
-
-            <!-- Link zum Shop -->
             <div class="link-box">
                 <a href="{% url 'shop' %}">
                     <img class="shirts" src="{% static 'landing/shirts.png' %}" alt="Shop">
                 </a>
             </div>
         </div>
-
-        <!-- Container für das größere Foto unten -->
         <div class="link-box bottom-box">
             <a href="{% url 'galerie' %}">
                 <img class="fotos" src="{% static 'landing/Galerie.png' %}" alt="Fotos">
             </a>
         </div>
     </div>
-
-        <!-- Footer-Bereich mit dem Impressum -->
-        <footer>
-            <a href="{% url 'impressum' %}" >Impressum</a>
-        </footer>
-    </body>
-    </html>
+    <footer>
+        <a href="{% url 'impressum' %}">Impressum</a>
+    </footer>
 </body>
 </html>
