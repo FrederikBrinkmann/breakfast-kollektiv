@@ -93,7 +93,7 @@ def process_checkout(request):
 
             # Success message and redirect
             messages.success(request, 'Bestellung erfolgreich abgeschlossen!')
-            return redirect('landing_page')
+            return redirect('landing')
         else:
             # If the form is not valid, show errors
             messages.error(request, 'Bitte füllen Sie alle Felder korrekt aus.')

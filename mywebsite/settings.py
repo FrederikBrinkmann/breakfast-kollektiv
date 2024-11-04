@@ -11,7 +11,17 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-from decouple import config 
+from decouple import config
+import os
+import ssl
+import certifi
+
+# Force Python to use the `certifi` certificate bundle
+os.environ['SSL_CERT_FILE'] = certifi.where()
+ssl_context = ssl.create_default_context()
+ssl_context.load_verify_locations(certifi.where())
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -124,16 +134,18 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 # Media files (Uploaded by users)
 MEDIA_URL = '/media/'  # URL prefix for media files
 MEDIA_ROOT = BASE_DIR / 'media'  # Directory where media files are stored
+
 
 # Email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.strato.de'  # Use your email provider's SMTP server
 EMAIL_PORT = 465  # Port for TLS
 EMAIL_USE_TLS = False
-EMAIL_USE_SSL = False  # Use SSL if available
-EMAIL_HOST_USER = 'xx'
-EMAIL_HOST_PASSWORD = 'xxx'
-DEFAULT_FROM_EMAIL = 'xxx'
+EMAIL_USE_SSL = True  # Use SSL if available
+EMAIL_HOST_USER = 'info@breakfast-kollektiv.de'
+EMAIL_HOST_PASSWORD = 'xx' # Your password
+DEFAULT_FROM_EMAIL = 'info@breakfast-kollektiv.de'
