@@ -33,15 +33,14 @@
             width: 100%;
             max-width: 1200px;
         }
-        .top-container {
-            display: flex;
-            justify-content: center;
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Zwei Spalten für die 2x2 Anordnung */
             gap: 20px;
             width: 100%;
-            flex-wrap: wrap; /* Ermöglicht das Umfließen der Boxen bei kleineren Bildschirmen */
+            max-width: 800px; /* Maximale Breite für die Anordnung im Quadrat */
         }
         .link-box {
-            flex: 1;
             padding: 10px;
             text-align: center;
             max-width: 400px; /* Erhöht die Max-Breite der Boxen */
@@ -53,23 +52,16 @@
             margin-bottom: 10px;
             transition: all 0.3s ease;
         }
-        .bottom-box img {
-            width: 100%; /* Bild füllt die gesamte Breite */
-            height: auto;
-        }
         /* Hover-Effekte */
-        .link-box img.music-events:hover,
-        .link-box img.shirts:hover,
-        .bottom-box img:hover {
+        .link-box img:hover {
             transform: scale(1.05); /* Vergrößerung bei Hover */
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
             border: 3px solid black;
         }
         /* Responsive Anpassungen für kleinere Bildschirme */
         @media (max-width: 768px) {
-            .top-container {
-                flex-direction: column; /* Stellt die Bilder untereinander */
-                align-items: center; /* Zentriert die Bilder */
+            .grid-container {
+                grid-template-columns: 1fr; /* Auf kleinen Bildschirmen übereinander anordnen */
             }
             h1 {
                 font-size: 2rem;
@@ -101,7 +93,7 @@
 <body>
     <h1>BREAKFAST-KOLLEKTIV</h1>
     <div class="main-container">
-        <div class="top-container">
+        <div class="grid-container">
             <div class="link-box">
                 <a href="{% url 'musik_events' %}">
                     <img class="music-events" src="{% static 'landing/music_events.png' %}" alt="Musik und Events">
@@ -112,11 +104,16 @@
                     <img class="shirts" src="{% static 'landing/shirts.png' %}" alt="Shop">
                 </a>
             </div>
-        </div>
-        <div class="link-box bottom-box">
-            <a href="{% url 'galerie' %}">
-                <img class="fotos" src="{% static 'landing/Galerie.png' %}" alt="Fotos">
-            </a>
+            <div class="link-box">
+                <a href="{% url 'galerie' %}">
+                    <img class="fotos" src="{% static 'landing/Galerie.png' %}" alt="Fotos">
+                </a>
+            </div>
+            <div class="link-box">
+                <a href="{% url 'uberuns' %}">
+                    <img class="uberuns" src="{% static 'landing/uberuns.png' %}" alt="Über Uns">
+                </a>
+            </div>
         </div>
     </div>
     <footer>

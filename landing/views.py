@@ -14,6 +14,9 @@ def musik_events(request):
     events = Event.objects.all().order_by('-date')  # Most recent events first
     return render(request, 'landing/musik_events.html', {'events': events})
 
+def uberuns(request):
+    return render(request, 'landing/uberuns.html')
+
 def shop(request):
     products = Product.objects.all()
     return render(request, 'landing/shop.html', {'products': products})

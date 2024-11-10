@@ -17,7 +17,9 @@ urlpatterns = [
     path('galerie/', views.galerie, name='galerie'),
     path('checkout/', views.checkout, name='checkout'),
     path('process-checkout/', views.process_checkout, name='process_checkout'),
+    path('uberuns/', views.uberuns, name='uberuns'),  # Füge diese Zeile hinzu
 ]
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
