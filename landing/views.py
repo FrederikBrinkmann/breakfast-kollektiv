@@ -32,6 +32,19 @@ def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
     return render(request, 'landing/product_detail.html', {'product': product})
 
+# Product detail view with related products
+def product_detail(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    
+    # Fetch related products (e.g., excluding the current product and limiting to 4)
+    related_products = Product.objects.exclude(pk=pk)[:4]  # Adjust criteria as needed
+
+    return render(request, 'landing/product_detail.html', {
+        'product': product,
+        'related_products': related_products
+    })
+
+
 # Checkout view
 def checkout(request):
     product_id = request.GET.get('product_id')

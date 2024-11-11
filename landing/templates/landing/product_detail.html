@@ -14,21 +14,21 @@
 
         .product-header {
             text-align: left;
-            margin-bottom: 20px; /* Reduced margin */
+            margin-bottom: 20px;
             font-style: italic;
         }
 
         .product-header h1 {
-            font-size: 3rem; /* Increased font size */
+            font-size: 3rem;
             font-weight: bold;
-            line-height: 1.2; /* Adjusted line height for better spacing */
-            word-break: break-word; /* Ensures text breaks if needed */
+            line-height: 1.2;
+            word-break: break-word;
         }
 
         .product-detail-page {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px; /* Reduced gap */
+            gap: 20px;
             max-width: 1200px;
             margin: 0 auto;
             align-items: flex-start;
@@ -40,7 +40,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            max-width: 1000px; /* Increased max width */
+            max-width: 1000px;
             width: 100%;
             position: relative;
         }
@@ -48,16 +48,27 @@
         .image-gallery img {
             width: 100%;
             height: auto;
-            max-width: 1000px; /* Increased max width */
+            max-width: 1000px;
             cursor: pointer;
             transition: transform 0.2s;
+        }
+
+        .image-toggle-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
         }
 
         /* Product Information Section */
         .product-info {
             flex: 1;
             background-color: #ffffff;
-            padding: 15px; /* Reduced padding */
+            padding: 15px;
             border: 1px solid #eee;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             max-width: 400px;
@@ -66,7 +77,7 @@
         }
 
         .product-info h1 {
-            font-size: 2.5rem; /* Increased font size */
+            font-size: 2.5rem;
             font-weight: bold;
             margin-bottom: 10px;
             line-height: 1.2;
@@ -150,85 +161,55 @@
             display: block;
         }
 
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            .product-header h1 {
-                font-size: 2.5rem; /* Adjusted for smaller screens */
-                text-align: center;
-            }
-
-            .product-detail-page {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .product-info {
-                max-width: 100%;
-                margin-top: 20px;
-            }
-
-            .image-gallery {
-                max-width: 100%;
-            }
-
-            .image-gallery img {
-                max-width: 100%;
-                height: auto;
-            }
+        /* Related Products */
+        .related-products {
+            margin-top: 40px;
+            text-align: center;
         }
 
-        @media (max-width: 480px) {
-            .product-header h1 {
-                font-size: 2rem;
-                text-align: center;
-            }
-
-            .product-info {
-                padding: 12px; /* Further reduced padding */
-            }
-
-            .buy-button {
-                padding: 12px;
-            }
-
-            .additional-info h3 {
-                font-size: 1rem;
-            }
-
-            .additional-info-content {
-                font-size: 0.85rem;
-            }
+        .related-products h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
         }
+
+        .related-products-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .related-product {
+            width: 150px;
+            background-color: #ffffff;
+            padding: 10px;
+            border: 1px solid #eee;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .related-product img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .related-product p {
+            margin: 5px 0;
+        }
+
+            /* Responsive Styles for Mobile Devices */
+    @media (max-width: 768px) {
+        .related-product {
+            width: 80%;
+            max-width: 250px;
+        }
+
+        .related-product img {
+            width: 100%;
+        }
+    }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Size selection functionality
-            const sizeOptions = document.querySelectorAll('.size-option');
-            let selectedSize = null;
-
-            sizeOptions.forEach(option => {
-                option.addEventListener('click', () => {
-                    sizeOptions.forEach(o => o.classList.remove('active'));
-                    option.classList.add('active');
-                    selectedSize = option.textContent.trim(); // Save selected size
-                    document.getElementById('size-input').value = selectedSize; // Update hidden input
-                });
-            });
-
-            // Ensure a size is selected before submitting the form
-            const buyButton = document.querySelector('.buy-button');
-            const form = document.querySelector('#checkout-form');
-
-            buyButton.addEventListener('click', (e) => {
-                if (!selectedSize) {
-                    e.preventDefault(); // Prevent form submission
-                    alert('Bitte wähle eine Größe aus!');
-                    return;
-                }
-                form.submit(); // Submit the form if size is selected
-            });
-        });
-    </script>
 </head>
 <body>
 
@@ -240,10 +221,11 @@
     <div class="product-detail-page">
         <!-- Image Gallery Section -->
         <div class="image-gallery">
-            <img src="{{ product.image_front.url }}" alt="{{ product.name }} - Front" class="front-image">
+            <img src="{{ product.image_front.url }}" alt="{{ product.name }} - Front" class="front-image" style="display: block;">
             {% if product.image_back %}
                 <img src="{{ product.image_back.url }}" alt="{{ product.name }} - Back" class="back-image" style="display: none;">
             {% endif %}
+            <button class="image-toggle-button" onclick="toggleImage()">Ansicht wechseln</button>
         </div>
 
         <!-- Product Info Section -->
@@ -252,7 +234,7 @@
             <p class="price">{{ product.price }} €</p>
 
             <!-- Size Selection -->
-            <h3>WÄHLE EINE GRÖßE </h3>
+            <h3>WÄHLE EINE GRÖßE</h3>
             <div class="size-selection">
                 <div class="size-option">S</div>
                 <div class="size-option">M</div>
@@ -286,6 +268,76 @@
             </div>
         </div>
     </div>
+
+<!-- Related Products Section -->
+<div class="related-products">
+    <h2>Nutzer/innen gefällt auch</h2>
+    <div class="related-products-container">
+        {% for related_product in related_products %}
+            <div class="related-product">
+                <a href="{% url 'product_detail' related_product.id %}">  <!-- Link to the product detail page -->
+                    <img src="{{ related_product.image_front.url }}" alt="{{ related_product.name }}">
+                    <p>{{ related_product.name }}</p>
+                    <p>{{ related_product.price }} €</p>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<script>
+    function toggleImage() {
+        const frontImage = document.querySelector('.front-image');
+        const backImage = document.querySelector('.back-image');
+        if (frontImage && backImage) {
+            if (frontImage.style.display === 'none') {
+                frontImage.style.display = 'block';
+                backImage.style.display = 'none';
+            } else {
+                frontImage.style.display = 'none';
+                backImage.style.display = 'block';
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Toggle functionality for additional info sections
+        document.querySelectorAll('.additional-info h3').forEach(header => {
+            header.addEventListener('click', function () {
+                const content = this.nextElementSibling;
+                content.classList.toggle('open');
+                this.classList.toggle('open');
+            });
+        });
+
+        // Size selection functionality
+        const sizeOptions = document.querySelectorAll('.size-option');
+        let selectedSize = null;
+
+        sizeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                sizeOptions.forEach(o => o.classList.remove('active'));
+                option.classList.add('active');
+                selectedSize = option.textContent.trim();
+                document.getElementById('size-input').value = selectedSize;
+            });
+        });
+
+        // Buy button functionality
+        const buyButton = document.querySelector('.buy-button');
+        const form = document.querySelector('#checkout-form');
+
+        buyButton.addEventListener('click', (e) => {
+            if (!selectedSize) {
+                e.preventDefault();
+                alert('Bitte wähle eine Größe aus!');
+                return;
+            }
+            form.submit();
+        });
+    });
+</script>
 
 </body>
 </html>
