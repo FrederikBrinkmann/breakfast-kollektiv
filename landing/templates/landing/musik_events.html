@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-{% load static %}
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -13,7 +12,6 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
         }
 
@@ -24,132 +22,130 @@
             margin-bottom: 30px;
         }
 
+        h2 {
+            font-size: 1.5rem;
+            text-align: center;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
         .event-container {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr 1fr 80px;
+            align-items: center;
             width: 100%;
             max-width: 800px;
-            padding: 20px;
+            padding: 15px 20px;
             background-color: #ffffff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-            border-radius: 8px; /* Adds rounded corners for a modern look */
+            margin-bottom: 0px; /* Entfernt Abstand unten */
+            border-radius: 0; /* Entfernt runde Ecken */
+            border-bottom: 1px solid #e0e0e0; /* Linie zwischen Events */
         }
 
-        .event-header {
-            margin-bottom: 10px;
-        }
-
-        .event-header h2 {
-            margin: 0;
-            font-size: 1.5rem;
-        }
-
-        .event-header p {
-            margin: 0;
-            color: #666;
-        }
-
-        .event-content {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin-bottom: 20px; /* Adds some space between content and media */
-        }
-
-        .event-content img {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-            border-radius: 5px;
+        .event-container:last-child {
+            border-bottom: none; /* Entfernt Linie für das letzte Event */
         }
 
         .event-details {
-            flex: 1;
-        }
-
-        .event-media iframe {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1rem;
+            color: #444;
             width: 100%;
-            height: 300px;
-            border-radius: 5px;
         }
 
-        /* SoundCloud iframe styling */
-        .soundcloud-embed {
-            width: 100%;
-            height: 166px;
-            border: none;
-            margin-top: 10px;
+        .event-date {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
         }
 
-        /* Responsive Styles */
+        .event-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 5px;
+        }
+
+        .event-location,
+        .event-time {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .time-location-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .calendar-icon {
+            margin-left: 10px;
+            font-size: 1.2em;
+            color: #333;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        /* Responsive styles */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-                margin-bottom: 20px;
-            }
-
             .event-container {
-                padding: 15px;
-                margin-bottom: 20px;
+                grid-template-columns: 1fr; /* Stapelt Inhalt vertikal auf kleinen Bildschirmen */
+                text-align: center;
             }
 
-            .event-header h2 {
-                font-size: 1.3rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.5rem;
-            }
-
-            .event-container {
-                padding: 10px;
-                margin-bottom: 15px;
-            }
-
-            .event-header h2 {
-                font-size: 1.2rem;
+            .time-location-wrapper {
+                flex-direction: column;
+                gap: 5px;
             }
         }
     </style>
 </head>
 <body>
 
-    <h1>BREAKFAST-KOLLEKTIV</h1>
+<h1>BREAKFAST-KOLLEKTIV</h1>
 
-    {% for event in events %}
+<h2>KOMMENDE ✌️</h2>
+{% for event in upcoming_events %}
     <div class="event-container">
-        <!-- Event Header with Date, Name, and Location -->
-        <div class="event-header">
-            <h2>{{ event.date }} - {{ event.name }}</h2>
-            <p>{{ event.location }}</p>
+        <div class="event-date">{{ event.date|date:"d M Y" }} - {{ event.name }}</div>
+        
+        <!-- Zeit- und Ort-Informationen in einer flexbox-Umgebung -->
+        <div class="time-location-wrapper">
+            {% if event.start_time or event.end_time %}
+                <div class="event-time">
+                    Start: {{ event.start_time|time:"H:i" }}{% if event.end_time %} - Ende: {{ event.end_time|time:"H:i" }}{% endif %}
+                </div>
+            {% endif %}
+            <div class="event-location">{{ event.location }}</div>
         </div>
 
-        <!-- Event Content with Image and Description -->
-        {% if event.image %}
-        <div class="event-content">
-            <img src="{{ event.image.url }}" alt="Event Image">
-            <div class="event-details">
-                <p>{{ event.description }}</p>
-            </div>
-        </div>
-        {% endif %}
-
-        <!-- Embedded Media (YouTube or SoundCloud) -->
-        <div class="event-media">
-            {% if event.youtube_url %}
-            <iframe src="https://www.youtube.com/embed/{{ event.youtube_url|slice:'-11:' }}" frameborder="0" allowfullscreen></iframe>
-            {% endif %}
-            
-            {% if event.soundcloud_url %}
-            <iframe class="soundcloud-embed" scrolling="no" frameborder="no" allow="autoplay" 
-                src="{{ event.soundcloud_url }}"></iframe>
-            {% endif %}
-        </div>
+        <!-- Kalender-Icon zum Herunterladen der ICS-Datei -->
+        <a href="{% url 'download_ics' event.id %}" class="calendar-icon" title="In Kalender speichern">📅</a>
     </div>
-    {% endfor %}
+{% endfor %}
+
+<h2>VERGANGENE 👇</h2>
+{% for event in past_events %}
+    <div class="event-container">
+        <div class="event-date">{{ event.date|date:"d M Y" }} - {{ event.name }}</div>
+        
+        <!-- Zeit- und Ort-Informationen in einer flexbox-Umgebung -->
+        <div class="time-location-wrapper">
+            {% if event.start_time or event.end_time %}
+                <div class="event-time">
+                    Start: {{ event.start_time|time:"H:i" }}{% if event.end_time %} - Ende: {{ event.end_time|time:"H:i" }}{% endif %}
+                </div>
+            {% endif %}
+            <div class="event-location">{{ event.location }}</div>
+        </div>
+
+        <!-- Kalender-Icon zum Herunterladen der ICS-Datei -->
+        <a href="{% url 'download_ics' event.id %}" class="calendar-icon" title="In Kalender speichern">📅</a>
+    </div>
+{% endfor %}
 
 </body>
-</html> 
+</html>

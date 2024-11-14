@@ -18,6 +18,7 @@ urlpatterns = [
     path('checkout/', views.checkout, name='checkout'),
     path('process-checkout/', views.process_checkout, name='process_checkout'),
     path('uberuns/', views.uberuns, name='uberuns'),  # Füge diese Zeile hinzu
+    path('event/<int:event_id>/download/', views.download_ics, name='download_ics'),
 ]
 
 

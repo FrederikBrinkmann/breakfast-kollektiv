@@ -1,10 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import date 
 
 class Event(models.Model):
     name = models.CharField(max_length=200)
     date = models.DateField()
     location = models.CharField(max_length=200)
+    start_time = models.TimeField(null=True, blank=True)  # Startzeit für das Event
+    end_time = models.TimeField(null=True, blank=True) 
     description = models.TextField(blank=True)
     image = models.ImageField(blank=True, upload_to='events/')
     youtube_url = models.URLField(blank=True, null=True)
@@ -12,7 +15,17 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
+    
+    @classmethod
+    def upcoming_events(cls):
+        """Returns upcoming events sorted by date."""
+        return cls.objects.filter(date__gte=date.today()).order_by('date')
 
+    @classmethod
+    def past_events(cls):
+        """Returns past events sorted by date descending."""
+        return cls.objects.filter(date__lt=date.today()).order_by('-date')
+    
 class Product(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()

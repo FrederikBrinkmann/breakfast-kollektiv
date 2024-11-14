@@ -5,14 +5,61 @@ from .models import Product, Order, Event
 from .forms import CheckoutForm
 from django.core.mail import send_mail
 from django.conf import settings
+from datetime import date
 
 # Views for your landing page and event handling
 def landing_page(request):
     return render(request, 'landing/landing.html')
 
+
 def musik_events(request):
-    events = Event.objects.all().order_by('-date')  # Most recent events first
-    return render(request, 'landing/musik_events.html', {'events': events})
+    upcoming_events = Event.upcoming_events()  # Fetch upcoming events
+    past_events = Event.past_events()  # Fetch past events
+
+    return render(request, 'landing/musik_events.html', {
+        'upcoming_events': upcoming_events,
+        'past_events': past_events
+    })
+
+# views.py
+# views.py
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from .models import Event
+from ics import Calendar, Event as ICSEvent
+from datetime import datetime
+
+def download_ics(request, event_id):
+    # Hole das Event-Objekt
+    event = get_object_or_404(Event, id=event_id)
+
+    # Erstelle einen ICS-Kalender
+    calendar = Calendar()
+    ics_event = ICSEvent()
+
+    # Setze die Event-Daten für das ICS-Event
+    ics_event.name = event.name
+    ics_event.description = event.description
+    ics_event.location = event.location
+
+    # Kombiniere Datum und Uhrzeit für Start und Ende des Events
+    start_datetime = datetime.combine(event.date, event.start_time) if event.start_time else event.date
+    end_datetime = datetime.combine(event.date, event.end_time) if event.end_time else None
+
+    ics_event.begin = start_datetime.isoformat()
+    
+    # Falls eine Endzeit definiert ist, füge sie hinzu
+    if end_datetime:
+        ics_event.end = end_datetime.isoformat()
+
+    # Füge das Event zum Kalender hinzu
+    calendar.events.add(ics_event)
+
+    # Konvertiere den Kalender in eine ICS-Datei und bereite den Download vor
+    response = HttpResponse(calendar.serialize(), content_type="text/calendar")
+    response['Content-Disposition'] = f'attachment; filename="{event.name}.ics"'
+    return response
+
 
 def uberuns(request):
     return render(request, 'landing/uberuns.html')
@@ -27,23 +74,17 @@ def galerie(request):
 def impressum(request):
     return render(request, 'landing/impressum.html')
 
-# Product detail view
-def product_detail(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    return render(request, 'landing/product_detail.html', {'product': product})
-
 # Product detail view with related products
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
     
-    # Fetch related products (e.g., excluding the current product and limiting to 4)
-    related_products = Product.objects.exclude(pk=pk)[:4]  # Adjust criteria as needed
+    # Fetch related products, excluding the current product, and limit to 4
+    related_products = Product.objects.exclude(pk=pk)[:4]
 
     return render(request, 'landing/product_detail.html', {
         'product': product,
         'related_products': related_products
     })
-
 
 # Checkout view
 def checkout(request):
@@ -115,4 +156,4 @@ def process_checkout(request):
             messages.error(request, 'Bitte füllen Sie alle Felder korrekt aus.')
             return render(request, 'landing/checkout.html', {'form': form})
 
-    return HttpResponse('Ungültige Anfrage', status=400)
+    return HttpResponse('Ungültige Anfrage', status=400) 
