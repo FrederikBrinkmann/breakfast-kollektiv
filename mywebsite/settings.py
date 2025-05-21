@@ -26,7 +26,6 @@ ssl_context.load_verify_locations(certifi.where())
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -142,10 +141,11 @@ MEDIA_ROOT = BASE_DIR / 'media'  # Directory where media files are stored
 
 # Email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.strato.de'  # Use your email provider's SMTP server
+EMAIL_HOST = config('EMAIL_HOST')  
 EMAIL_PORT = 465  # Port for TLS
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True  # Use SSL if available
-EMAIL_HOST_USER = 'info@breakfast-kollektiv.de' # Use your breakfast
-EMAIL_HOST_PASSWORD = '!' # Your password
-DEFAULT_FROM_EMAIL = 'info@breakfast-kollektiv.de'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER') # Use your breakfast
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD') # Your password
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')  # Default sender email address
+
