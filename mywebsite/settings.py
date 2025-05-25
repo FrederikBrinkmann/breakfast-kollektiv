@@ -11,10 +11,15 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-from decouple import config
 import os
 import ssl
 import certifi
+from decouple import Config, RepositoryEnv
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+env_path = BASE_DIR / ".env"
+config = Config(RepositoryEnv(env_path))
 
 # Force Python to use the `certifi` certificate bundle
 os.environ['SSL_CERT_FILE'] = certifi.where()
