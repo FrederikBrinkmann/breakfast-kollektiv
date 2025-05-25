@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warenkorb - Breakfast-Kollektiv</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .cart-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-weight: bold;
+            font-style: italic;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin-right: 20px;
+            border-radius: 4px;
+        }
+
+        .item-details {
+            flex-grow: 1;
+        }
+
+        .item-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .item-info {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .item-price {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-left: 20px;
+        }
+
+        .remove-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 15px;
+        }
+
+        .remove-btn:hover {
+            background-color: #c82333;
+        }
+
+        .cart-total {
+            text-align: right;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #333;
+        }
+
+        .total-amount {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 50px 0;
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="cart-container">
+        <h1>🛒 Warenkorb</h1>
+
+        {% if cart %}
+            {% for item in cart %}
+                <div class="cart-item">
+                    {% if item.image_front %}
+                        <img src="{{ item.image_front }}" alt="{{ item.name }}" class="item-image">
+                    {% endif %}
+                    
+                    <div class="item-details">
+                        <div class="item-name">{{ item.name }}</div>
+                        <div class="item-info">
+                            Größe: {{ item.size }} | Anzahl: {{ item.quantity }}
+                        </div>
+                    </div>
+                    
+                    <div class="item-price">{{ item.total_price }} €</div>
+                    
+                    <form method="post" action="{% url 'cart_remove' item.product.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="size" value="{{ item.size }}">
+                        <button type="submit" class="remove-btn">Entfernen</button>
+                    </form>
+                </div>
+            {% endfor %}
+
+            <div class="cart-total">
+                <div class="total-amount">Gesamt: {{ cart.get_total_price }} €</div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="{% url 'shop' %}" class="btn btn-secondary">⬅ Weiter einkaufen</a>
+                <div>
+                    <a href="{% url 'cart_clear' %}" class="btn btn-danger" onclick="return confirm('Warenkorb wirklich leeren?')">Warenkorb leeren</a>
+                    <a href="#" class="btn btn-primary">Zur Kasse</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-cart">
+                <p>Dein Warenkorb ist leer.</p>
+                <a href="{% url 'shop' %}" class="btn btn-primary">Jetzt einkaufen</a>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

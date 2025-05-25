@@ -19,6 +19,15 @@ urlpatterns = [
     path('process-checkout/', views.process_checkout, name='process_checkout'),
     path('uberuns/', views.uberuns, name='uberuns'),  # Füge diese Zeile hinzu
     path('event/<int:event_id>/download/', views.download_ics, name='download_ics'),
+    
+    # Cart URLs
+    path('cart/', views.cart_detail, name='cart_detail'),
+    path('cart/add/<int:product_id>/', views.cart_add, name='cart_add'),
+    path('cart/remove/<int:product_id>/', views.cart_remove, name='cart_remove'),
+    path('cart/clear/', views.cart_clear, name='cart_clear'),
+    path('cart/checkout/', views.cart_checkout, name='cart_checkout'),
+    path('cart/checkout/process/', views.process_cart_checkout, name='process_cart_checkout'),
+    path('order/success/', views.order_success, name='order_success'),
 ]
 
 

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bestellung erfolgreich - Breakfast Kollektiv</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .success-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #28a745;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .order-number {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .info-box {
+            background-color: #e9f4ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-icon">✅</div>
+        
+        <h1>Bestellung erfolgreich!</h1>
+        
+        <p>Vielen Dank für Ihre Bestellung! Wir haben Ihre Bestellung erhalten und werden sie so schnell wie möglich bearbeiten.</p>
+        
+        {% if order %}
+        <div class="order-number">
+            Bestellnummer: {{ order.order_number }}
+        </div>
+        
+        <div class="info-box">
+            <h3>Was passiert als nächstes?</h3>
+            <ul style="text-align: left; padding-left: 20px;">
+                <li>Sie erhalten eine Bestellbestätigung per E-Mail an {{ order.email }}</li>
+                <li>Wir bereiten Ihre Bestellung vor und versenden sie innerhalb von 2-3 Werktagen</li>
+                <li>Sie erhalten eine Versandbestätigung mit Tracking-Informationen</li>
+            </ul>
+        </div>
+        {% endif %}
+        
+        <div style="margin-top: 30px;">
+            <a href="{% url 'shop' %}" class="btn btn-primary">Weiter einkaufen</a>
+            <a href="{% url 'landing' %}" class="btn btn-secondary">Zur Startseite</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bestellbestätigung - {{ order.order_number }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .content {
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        .order-details {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        
+        .total {
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-top: 2px solid #333;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>BREAKFAST KOLLEKTIV</h1>
+        <p>Bestellbestätigung</p>
+    </div>
+    
+    <div class="content">
+        <h2>Hallo {{ order.name }},</h2>
+        
+        <p>vielen Dank für Ihre Bestellung! Wir haben Ihre Bestellung erhalten und werden sie so schnell wie möglich bearbeiten.</p>
+        
+        <div class="order-details">
+            <h3>Bestelldetails</h3>
+            <p><strong>Bestellnummer:</strong> {{ order.order_number }}</p>
+            <p><strong>Bestelldatum:</strong> {{ order.created_at|date:"d.m.Y H:i" }} Uhr</p>
+            
+            <h4>Bestellte Artikel:</h4>
+            {% for item in order_items %}
+            <div class="order-item">
+                <div>
+                    <strong>{{ item.product.name }}</strong><br>
+                    Größe: {{ item.size }} | Anzahl: {{ item.quantity }}
+                </div>
+                <div>{{ item.get_total_price }} €</div>
+            </div>
+            {% endfor %}
+            
+            <div class="order-item total">
+                <div>Gesamtsumme:</div>
+                <div>{{ order.total_price }} €</div>
+            </div>
+        </div>
+        
+        <div class="order-details">
+            <h3>Lieferadresse</h3>
+            <p>
+                {{ order.name }}<br>
+                {{ order.street_address }}<br>
+                {{ order.postal_code }} {{ order.city }}<br>
+                {{ order.country }}
+            </p>
+            {% if order.phone %}
+            <p><strong>Telefon:</strong> {{ order.phone }}</p>
+            {% endif %}
+        </div>
+        
+        {% if order.notes %}
+        <div class="order-details">
+            <h3>Ihre Anmerkungen</h3>
+            <p>{{ order.notes }}</p>
+        </div>
+        {% endif %}
+        
+        <h3>Was passiert als nächstes?</h3>
+        <ul>
+            <li>Wir bereiten Ihre Bestellung vor und versenden sie innerhalb von 2-3 Werktagen</li>
+            <li>Sie erhalten eine Versandbestätigung mit Tracking-Informationen</li>
+            <li>Die Lieferzeit beträgt in der Regel 3-5 Werktage</li>
+        </ul>
+        
+        <p>Bei Fragen zu Ihrer Bestellung können Sie uns gerne kontaktieren.</p>
+    </div>
+    
+    <div class="footer">
+        <p>Vielen Dank für Ihren Einkauf bei Breakfast Kollektiv!</p>
+        <p>Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht auf diese E-Mail.</p>
+    </div>
+</body>
+</html>

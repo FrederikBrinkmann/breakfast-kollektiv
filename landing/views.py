@@ -1,11 +1,18 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib import messages
-from .models import Product, Order, Event
-from .forms import CheckoutForm
+from .models import Product, Order, Event, OrderItem
+from .forms import CheckoutForm, CartCheckoutForm
 from django.core.mail import send_mail
 from django.conf import settings
 from datetime import date
+from .cart import Cart
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from ics import Calendar, Event as ICSEvent
+from datetime import datetime
 
 # Views for your landing page and event handling
 def landing_page(request):
@@ -20,14 +27,6 @@ def musik_events(request):
         'upcoming_events': upcoming_events,
         'past_events': past_events
     })
-
-# views.py
-# views.py
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-from .models import Event
-from ics import Calendar, Event as ICSEvent
-from datetime import datetime
 
 def download_ics(request, event_id):
     # Hole das Event-Objekt
@@ -156,4 +155,170 @@ def process_checkout(request):
             messages.error(request, 'Bitte füllen Sie alle Felder korrekt aus.')
             return render(request, 'landing/checkout.html', {'form': form})
 
-    return HttpResponse('Ungültige Anfrage', status=400) 
+    return HttpResponse('Ungültige Anfrage', status=400)
+
+# Cart views
+def cart_detail(request):
+    """Display cart contents"""
+    cart = Cart(request)
+    return render(request, 'landing/cart.html', {'cart': cart})
+
+@require_POST
+def cart_add(request, product_id):
+    """Add product to cart"""
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    size = request.POST.get('size', 'M')
+    quantity = int(request.POST.get('quantity', 1))
+    
+    cart.add(product=product, quantity=quantity, size=size)
+    
+    # Return JSON response for AJAX requests
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'success': True,
+            'cart_count': len(cart),
+            'message': f'{product.name} wurde zum Warenkorb hinzugefügt!'
+        })
+    
+    messages.success(request, f'{product.name} wurde zum Warenkorb hinzugefügt!')
+    return redirect('product_detail', pk=product_id)
+
+@require_POST
+def cart_remove(request, product_id):
+    """Remove product from cart"""
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    size = request.POST.get('size', 'M')
+    
+    cart.remove(product, size)
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'success': True,
+            'cart_count': len(cart),
+            'cart_total': str(cart.get_total_price())
+        })
+    
+    return redirect('cart_detail')
+
+def cart_clear(request):
+    """Clear entire cart"""
+    cart = Cart(request)
+    cart.clear()
+    return redirect('cart_detail')
+
+def cart_context_processor(request):
+    """Context processor to make cart available in all templates"""
+    return {'cart': Cart(request)}
+
+# Cart-based checkout views
+def cart_checkout(request):
+    """Display checkout form for cart items"""
+    cart = Cart(request)
+    
+    if len(cart) == 0:
+        messages.error(request, 'Ihr Warenkorb ist leer.')
+        return redirect('cart_detail')
+    
+    form = CartCheckoutForm()
+    
+    return render(request, 'landing/cart_checkout.html', {
+        'form': form,
+        'cart': cart,
+        'total': cart.get_total_price()
+    })
+
+def process_cart_checkout(request):
+    """Process the cart checkout form"""
+    if request.method == 'POST':
+        form = CartCheckoutForm(request.POST)
+        cart = Cart(request)
+        
+        if len(cart) == 0:
+            messages.error(request, 'Ihr Warenkorb ist leer.')
+            return redirect('cart_detail')
+        
+        if form.is_valid():
+            # Create order
+            order = Order(
+                user=request.user if request.user.is_authenticated else None,
+                name=form.cleaned_data['name'],
+                email=form.cleaned_data['email'],
+                phone=form.cleaned_data['phone'],
+                street_address=form.cleaned_data['street_address'],
+                postal_code=form.cleaned_data['postal_code'],
+                city=form.cleaned_data['city'],
+                country=form.cleaned_data['country'],
+                notes=form.cleaned_data['notes'],
+                total_price=cart.get_total_price()
+            )
+            order.save()
+            
+            # Create order items
+            for item in cart:
+                OrderItem.objects.create(
+                    order=order,
+                    product=item['product'],
+                    quantity=item['quantity'],
+                    size=item['size']
+                )
+            
+            # Send confirmation email
+            send_order_confirmation_email(order)
+            
+            # Clear cart
+            cart.clear()
+            
+            messages.success(request, f'Bestellung erfolgreich! Bestellnummer: {order.order_number}')
+            return render(request, 'landing/order_success.html', {'order': order})
+        
+        else:
+            return render(request, 'landing/cart_checkout.html', {
+                'form': form,
+                'cart': cart,
+                'total': cart.get_total_price()
+            })
+    
+    return redirect('cart_checkout')
+
+def send_order_confirmation_email(order):
+    """Send order confirmation email"""
+    try:
+        # Email to customer
+        subject = f'Bestellbestätigung - {order.order_number}'
+        
+        # Create email content
+        email_context = {
+            'order': order,
+            'order_items': order.items.all()
+        }
+        
+        html_message = render_to_string('landing/emails/order_confirmation.html', email_context)
+        plain_message = strip_tags(html_message)
+        
+        send_mail(
+            subject=subject,
+            message=plain_message,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[order.email],
+            html_message=html_message,
+            fail_silently=False,
+        )
+        
+        # Email to shop owner (optional)
+        owner_subject = f'Neue Bestellung - {order.order_number}'
+        send_mail(
+            subject=owner_subject,
+            message=f'Neue Bestellung eingegangen:\n\nBestellnummer: {order.order_number}\nKunde: {order.name}\nE-Mail: {order.email}\nGesamtsumme: {order.total_price}€',
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[settings.EMAIL_HOST_USER],  # Send to shop email
+            fail_silently=True,
+        )
+        
+    except Exception as e:
+        print(f"Error sending email: {e}")
+
+def order_success(request):
+    """Display order success page"""
+    return render(request, 'landing/order_success.html')

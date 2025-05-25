@@ -1,0 +1,12 @@
+<h2>Produkte</h2>
+<ul>
+  {% for product in products %}
+    <li>
+      <strong>{{ product.name }}</strong> – {{ product.price }} €
+      <br>
+      <a href="{% url 'add_to_cart' product.id %}">In den Warenkorb</a>
+    </li>
+  {% endfor %}
+</ul>
+
+<a href="{% url 'cart_detail' %}">🛒 Zum Warenkorb</a>

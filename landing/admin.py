@@ -18,6 +18,11 @@ class ProductAdmin(admin.ModelAdmin):
 # Add Order admin interface
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('user', 'name', 'email', 'address', 'size', 'total_price', 'created_at')  # Display these fields in the list view
-    search_fields = ('name', 'email')  # Add a search bar for the name and email fields
-    list_filter = ('created_at', 'user')  # Add filters for the created_at and user fields
+    list_display = ('user', 'name', 'email', 'address', 'get_sizes', 'total_price', 'created_at')
+    search_fields = ('name', 'email')
+    list_filter = ('created_at', 'user')
+
+    def get_sizes(self, obj):
+        # Alle Größen der OrderItems für diese Order als Komma-Liste ausgeben
+        return ", ".join([item.size for item in obj.items.all() if item.size])
+    get_sizes.short_description = 'Größen'

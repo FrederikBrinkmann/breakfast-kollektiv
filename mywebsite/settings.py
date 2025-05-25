@@ -78,6 +78,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'landing.views.cart_context_processor',
             ],
         },
     },
@@ -153,4 +154,7 @@ EMAIL_USE_SSL = True  # Use SSL if available
 EMAIL_HOST_USER = config('EMAIL_HOST_USER') # Use your breakfast
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD') # Your password
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')  # Default sender email address
+
+# Cart session settings
+CART_SESSION_ID = 'cart'
 
