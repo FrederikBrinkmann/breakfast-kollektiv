@@ -21,8 +21,9 @@
         h1 {
             font-style: italic;
             text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+            font-size: 3rem;
+            margin-bottom: 96px;
+            line-height: 1.1;
         }
         .main-container {
             display: flex;
@@ -39,11 +40,17 @@
             gap: 20px;
             width: 100%;
             max-width: 800px; /* Maximale Breite für die Anordnung im Quadrat */
+            justify-items: center; /* Zentriert die Items horizontal */
+            align-items: center; /* Zentriert die Items vertikal */
         }
         .link-box {
             padding: 10px;
             text-align: center;
+            width: 100%;
             max-width: 400px; /* Erhöht die Max-Breite der Boxen */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .link-box img {
             width: 100%; /* Bild füllt die gesamte Box aus */
@@ -51,6 +58,7 @@
             cursor: pointer;
             margin-bottom: 10px;
             transition: all 0.3s ease;
+            display: block;
         }
         /* Hover-Effekte */
         .link-box img:hover {
@@ -60,22 +68,45 @@
         }
         /* Responsive Anpassungen für kleinere Bildschirme */
         @media (max-width: 768px) {
+            body {
+                padding: 10px; /* Weniger Padding für mehr Platz */
+            }
+            .main-container {
+                gap: 15px; /* Kleinere Abstände zwischen Elementen */
+            }
             .grid-container {
                 grid-template-columns: 1fr; /* Auf kleinen Bildschirmen übereinander anordnen */
+                justify-items: center;
+                gap: 15px; /* Kleinere Abstände zwischen Bildern */
             }
             h1 {
-                font-size: 2rem;
+                font-size: 2.5rem;
+                margin-bottom: 60px; /* Weniger Abstand unter der Überschrift */
             }
             .link-box {
-                max-width: 350px; /* Verkleinert die Boxen leicht auf mittelgroßen Bildschirmen */
+                max-width: 400px; /* Größere Boxen auf Tablets */
+                width: 100%;
+                padding: 5px; /* Weniger Padding in den Boxen */
             }
         }
         @media (max-width: 480px) {
+            body {
+                padding: 5px; /* Noch weniger Padding auf sehr kleinen Bildschirmen */
+            }
+            .main-container {
+                gap: 10px;
+            }
+            .grid-container {
+                gap: 10px; /* Noch kleinere Abstände */
+            }
             h1 {
-                font-size: 1.5rem;
+                font-size: 2rem;
+                margin-bottom: 40px; /* Noch weniger Abstand */
             }
             .link-box {
-                max-width: 300px; /* Verkleinert die Boxen auf kleinen Bildschirmen */
+                max-width: 350px; /* Größere Boxen auf Handys */
+                width: 95%; /* Fast die gesamte Bildschirmbreite nutzen */
+                padding: 2px; /* Minimales Padding */
             }
         }
         /* Footer */
@@ -91,7 +122,7 @@
     </style>
 </head>
 <body>
-    <h1>BREAKFAST-KOLLEKTIV</h1>
+    <h1>BREAKFAST-<br>KOLLEKTIV</h1>
     <div class="main-container">
         <div class="grid-container">
             <div class="link-box">

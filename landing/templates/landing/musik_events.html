@@ -18,134 +18,210 @@
         h1 {
             font-style: italic;
             text-align: center;
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 30px;
+            font-weight: bold;
+            line-height: 1.1;
         }
 
         h2 {
             font-size: 1.5rem;
             text-align: center;
             font-weight: bold;
-            margin: 20px 0;
+            margin: 30px 0 20px 0;
+        }
+
+        .events-section {
+            width: 100%;
+            max-width: 700px;
+            margin-bottom: 40px;
         }
 
         .event-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr 80px;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            width: 100%;
-            max-width: 800px;
-            padding: 15px 20px;
             background-color: #ffffff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 0px; /* Entfernt Abstand unten */
-            border-radius: 0; /* Entfernt runde Ecken */
-            border-bottom: 1px solid #e0e0e0; /* Linie zwischen Events */
+            margin-bottom: 1px;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .event-container:first-child {
+            border-radius: 8px 8px 0 0;
         }
 
         .event-container:last-child {
-            border-bottom: none; /* Entfernt Linie für das letzte Event */
+            border-radius: 0 0 8px 8px;
+            border-bottom: none;
         }
 
-        .event-details {
-            display: flex;
-            justify-content: space-between;
-            font-size: 1rem;
-            color: #444;
-            width: 100%;
+        .event-container:only-child {
+            border-radius: 8px;
+        }
+
+        .event-info {
+            flex: 1;
         }
 
         .event-date {
-            font-size: 1.2rem;
+            font-size: 0.9rem;
             font-weight: bold;
-            color: #333;
-        }
-
-        .event-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #000;
+            color: #666;
             margin-bottom: 5px;
         }
 
-        .event-location,
-        .event-time {
-            font-size: 1rem;
+        .event-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .event-details {
+            font-size: 0.85rem;
             color: #666;
         }
 
-        .time-location-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
+        .event-location {
+            margin-bottom: 3px;
+        }
+
+        .event-time {
+            color: #888;
         }
 
         .calendar-icon {
-            margin-left: 10px;
-            font-size: 1.2em;
-            color: #333;
+            background: none;
+            border: none;
+            font-size: 2rem;
             cursor: pointer;
+            padding: 10px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
             text-decoration: none;
+            color: #666;
         }
 
-        /* Responsive styles */
+        .calendar-icon:hover {
+            background-color: #f0f0f0;
+        }
+
+        .no-events {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-style: italic;
+            background-color: white;
+            border-radius: 8px;
+        }
+
+        /* Mobile Optimierungen */
         @media (max-width: 768px) {
-            .event-container {
-                grid-template-columns: 1fr; /* Stapelt Inhalt vertikal auf kleinen Bildschirmen */
-                text-align: center;
+            body {
+                padding: 15px;
             }
 
-            .time-location-wrapper {
-                flex-direction: column;
-                gap: 5px;
+            h1 {
+                font-size: 2.5rem;
+                margin-bottom: 20px;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            .events-section {
+                max-width: 100%;
+            }
+
+            .event-container {
+                padding: 15px;
+            }
+
+            .event-title {
+                font-size: 1.5rem;
+            }
+
+            .event-date {
+                font-size: 0.85rem;
+            }
+
+            .event-details {
+                font-size: 0.8rem;
+            }
+
+            .calendar-icon {
+                font-size: 1.8rem;
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .event-container {
+                padding: 12px;
+            }
+
+            .event-title {
+                font-size: 1.3rem;
             }
         }
     </style>
 </head>
 <body>
 
-<h1>BREAKFAST-KOLLEKTIV</h1>
+<h1>BREAKFAST-<br>KOLLEKTIV</h1>
 
-<h2>KOMMENDE ✌️</h2>
-{% for event in upcoming_events %}
-    <div class="event-container">
-        <div class="event-date">{{ event.date|date:"d M Y" }} - {{ event.name }}</div>
-        
-        <!-- Zeit- und Ort-Informationen in einer flexbox-Umgebung -->
-        <div class="time-location-wrapper">
-            {% if event.start_time or event.end_time %}
-                <div class="event-time">
-                    Start: {{ event.start_time|time:"H:i" }}{% if event.end_time %} - Ende: {{ event.end_time|time:"H:i" }}{% endif %}
+<div class="events-section">
+    <h2>UPCOMING✌️</h2>
+    {% for event in upcoming_events %}
+        <div class="event-container">
+            <div class="event-info">
+                <div class="event-date">{{ event.date|date:"d.m.Y" }}</div>
+                <div class="event-title">{{ event.name }}</div>
+                <div class="event-details">
+                    <div class="event-location">{{ event.location }}</div>
+                    {% if event.start_time or event.end_time %}
+                        <div class="event-time">
+                            {% if event.start_time %}{{ event.start_time|time:"H:i" }}{% endif %}{% if event.end_time %} - {{ event.end_time|time:"H:i" }}{% endif %}
+                        </div>
+                    {% endif %}
                 </div>
-            {% endif %}
-            <div class="event-location">{{ event.location }}</div>
+            </div>
+            <a href="{% url 'download_ics' event.id %}" class="calendar-icon">📅</a>
         </div>
+    {% empty %}
+        <div class="no-events">
+            Keine kommenden Events verfügbar.
+        </div>
+    {% endfor %}
+</div>
 
-        <!-- Kalender-Icon zum Herunterladen der ICS-Datei -->
-        <a href="{% url 'download_ics' event.id %}" class="calendar-icon" title="In Kalender speichern">📅</a>
-    </div>
-{% endfor %}
-
-<h2>VERGANGENE 👇</h2>
-{% for event in past_events %}
-    <div class="event-container">
-        <div class="event-date">{{ event.date|date:"d M Y" }} - {{ event.name }}</div>
-        
-        <!-- Zeit- und Ort-Informationen in einer flexbox-Umgebung -->
-        <div class="time-location-wrapper">
-            {% if event.start_time or event.end_time %}
-                <div class="event-time">
-                    Start: {{ event.start_time|time:"H:i" }}{% if event.end_time %} - Ende: {{ event.end_time|time:"H:i" }}{% endif %}
+<div class="events-section">
+    <h2>PAST 👇</h2>
+    {% for event in past_events %}
+        <div class="event-container">
+            <div class="event-info">
+                <div class="event-date">{{ event.date|date:"d.m.Y" }}</div>
+                <div class="event-title">{{ event.name }}</div>
+                <div class="event-details">
+                    <div class="event-location">{{ event.location }}</div>
+                    {% if event.start_time or event.end_time %}
+                        <div class="event-time">
+                            {% if event.start_time %}{{ event.start_time|time:"H:i" }}{% endif %}{% if event.end_time %} - {{ event.end_time|time:"H:i" }}{% endif %}
+                        </div>
+                    {% endif %}
                 </div>
-            {% endif %}
-            <div class="event-location">{{ event.location }}</div>
+            </div>
+            <a href="{% url 'download_ics' event.id %}" class="calendar-icon">📅</a>
         </div>
-
-        <!-- Kalender-Icon zum Herunterladen der ICS-Datei -->
-        <a href="{% url 'download_ics' event.id %}" class="calendar-icon" title="In Kalender speichern">📅</a>
-    </div>
-{% endfor %}
+    {% empty %}
+        <div class="no-events">
+            Keine vergangenen Events verfügbar.
+        </div>
+    {% endfor %}
+</div>
 
 </body>
 </html>
