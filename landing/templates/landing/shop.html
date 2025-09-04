@@ -39,13 +39,23 @@
         }
 
         .header-title {
-            font-size: 18px;
+            font-size: 24px;
             font-weight: bold;
             font-style: italic;
             color: #333;
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .open-sign {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            margin-left: 8px;
         }
 
         .cart-icon {
@@ -322,7 +332,10 @@
         <span></span>
     </div>
     
-    <div class="header-title">SHOP</div>
+    <div class="header-title">
+        SHOP
+        <img src="{% static 'landing/werareopen.png' %}" class="open-sign" alt="We are open">
+    </div>
     
     <a href="{% url 'cart_detail' %}" class="cart-icon">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
