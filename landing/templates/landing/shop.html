@@ -13,7 +13,7 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 60px;
+            height: 70px;
             background-color: white;
             border-bottom: 1px solid #eee;
             display: flex;
@@ -24,8 +24,8 @@
         }
 
         .hamburger {
-            width: 24px;
-            height: 18px;
+            width: 28px;
+            height: 22px;
             cursor: pointer;
             display: flex;
             flex-direction: column;
@@ -33,13 +33,14 @@
         }
 
         .hamburger span {
-            height: 2px;
+            height: 3px;
             background-color: #333;
             transition: 0.3s;
+            width: 100%;
         }
 
         .header-title {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: bold;
             font-style: italic;
             color: #333;
@@ -48,20 +49,13 @@
             transform: translateX(-50%);
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-
-        .open-sign {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-            margin-left: 8px;
+            height: 70px;
         }
 
         .cart-icon {
             color: #333;
-            width: 40px;
-            height: 40px;
+            width: 65px;
+            height: 65px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -71,8 +65,16 @@
         }
 
         .cart-icon svg {
-            width: 28px;
-            height: 28px;
+            width: 48px;
+            height: 48px;
+        }
+
+        .cart-icon img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            image-rendering: auto;
+            filter: none;
         }
 
         .cart-icon:hover {
@@ -123,7 +125,7 @@
             box-shadow: 2px 0 10px rgba(0,0,0,0.1);
             transition: left 0.3s ease;
             z-index: 999;
-            padding: 80px 0 20px 0;
+            padding: 90px 0 20px 0;
         }
 
         .mobile-menu.active {
@@ -184,7 +186,7 @@
             font-family: Arial, sans-serif;
             background-color: #f9f9f9;
             margin: 0;
-            padding-top: 60px; /* Space for fixed header */
+            padding-top: 70px; /* Space for fixed header */
             padding-left: 20px;
             padding-right: 20px;
             padding-bottom: 20px;
@@ -201,22 +203,24 @@
         /* Grid layout for products */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
         }
 
         /* Styling for each product card */
         .product-container {
-            background-color: #ffffff;
-            border: 1px solid #eee;
-            padding: 10px;
-            text-align: center;
+            background-color: transparent;
+            border: none;
+            padding: 0;
+            text-align: left;
             transition: transform 0.3s ease;
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            align-items: center;
             cursor: pointer;
         }
 
@@ -228,8 +232,10 @@
         .product-content {
             position: relative;
             width: 100%;
-            padding-top: 100%; /* Maintain a square aspect ratio */
+            padding-top: 100%; /* Square aspect ratio to show full shirts */
             overflow: hidden;
+            background-color: #f5f5f5;
+            border-radius: 8px;
         }
 
         .product-content img {
@@ -238,7 +244,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* Show full shirt without cropping */
             transition: opacity 0.3s ease;
         }
 
@@ -262,21 +268,67 @@
 
         /* Product name and price */
         .product-details {
-            margin-top: 10px;
-            text-align: center;
+            margin-top: 18px;
+            text-align: left;
             width: 100%;
+            padding: 0;
         }
 
         .product-details h2 {
-            margin: 5px 0;
-            font-size: 1rem;
-            font-weight: bold;
+            margin: 0 0 10px 0;
+            font-size: 1.2rem;
+            font-weight: normal;
             color: #333;
+            line-height: 1.3;
+            text-decoration: underline;
         }
 
         .price {
-            font-size: 1rem;
-            color: #555;
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: normal;
+            margin: 0;
+        }
+
+        /* Mobile responsive adjustments */
+        @media (max-width: 1200px) {
+            .products-grid {
+                max-width: 1100px;
+                gap: 20px;
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .products-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .product-details h2 {
+                font-size: 1.1rem;
+            }
+            
+            .price {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: repeat(1, 1fr);
+                gap: 20px;
+                padding: 15px;
+            }
         }
 
         /* Cart icon styles */
@@ -334,13 +386,10 @@
     
     <div class="header-title">
         SHOP
-        <img src="{% static 'landing/werareopen.png' %}" class="open-sign" alt="We are open">
     </div>
     
     <a href="{% url 'cart_detail' %}" class="cart-icon">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M6 2L3 6V20C3 21.1 3.9 22 5 22H19C20.1 22 21 21.1 21 20V6L18 2H6ZM5 8H19V20H5V8ZM7 4H17L18.5 6H5.5L7 4Z" fill="currentColor"/>
-        </svg>
+        <img src="{% static 'landing/shoppingbag.png' %}" alt="Shopping Bag">
         {% if cart and cart|length > 0 %}
             <span class="cart-count">{{ cart|length }}</span>
         {% endif %}

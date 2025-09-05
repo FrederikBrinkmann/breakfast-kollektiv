@@ -1,21 +1,196 @@
 <!DOCTYPE html>
+{% load static %}
+
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ product.name }}</title>
     <style>
+        /* Header Bar */
+        .header-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        .hamburger {
+            width: 28px;
+            height: 22px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hamburger span {
+            height: 3px;
+            background-color: #333;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        .header-title {
+            font-size: 26px;
+            font-weight: bold;
+            font-style: italic;
+            color: #333;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            height: 70px;
+        }
+
+        .cart-icon {
+            color: #333;
+            width: 65px;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .cart-icon svg {
+            width: 48px;
+            height: 48px;
+        }
+
+        .cart-icon img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            image-rendering: auto;
+            filter: none;
+        }
+
+        .cart-icon:hover {
+            color: #666;
+            transform: scale(1.1);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav {
+            display: none;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 250px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            transition: left 0.3s ease;
+            z-index: 999;
+            padding: 90px 0 20px 0;
+        }
+
+        .mobile-menu.active {
+            left: 0;
+        }
+
+        .mobile-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mobile-menu li {
+            border-bottom: 1px solid #eee;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 20px 30px;
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            font-style: italic;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease;
+        }
+
+        .mobile-menu a:hover {
+            background-color: #f5f5f5;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f9f9f9;
             margin: 0;
-            padding: 20px;
+            padding-top: 70px; /* Space for fixed header */
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-bottom: 20px;
         }
 
         .product-header {
             text-align: left;
             margin-bottom: 20px;
             font-style: italic;
+            display: none; /* Hide duplicate header since we have the fixed header bar */
         }
 
         .product-header h1 {
@@ -198,67 +373,175 @@
             margin: 5px 0;
         }
 
-            /* Responsive Styles for Mobile Devices */
-    @media (max-width: 768px) {
-        .related-product {
-            width: 80%;
-            max-width: 250px;
+            /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .header-bar {
+                display: flex;
+            }
+
+            .product-detail-page {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .image-gallery {
+                max-width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .image-gallery img {
+                max-width: 100%;
+                border-radius: 10px;
+            }
+
+            .image-toggle-button {
+                width: 100%;
+                max-width: 300px;
+                padding: 12px;
+                font-size: 1.1rem;
+                margin-top: 15px;
+            }
+
+            .product-info {
+                max-width: 100%;
+                margin: 0;
+                padding: 20px;
+                border-radius: 10px;
+            }
+
+            .product-info h1 {
+                font-size: 2rem;
+                text-align: center;
+                margin-bottom: 15px;
+            }
+
+            .price {
+                font-size: 1.8rem;
+                text-align: center;
+                margin-bottom: 25px;
+                font-weight: bold;
+            }
+
+            .size-selection {
+                gap: 8px;
+                margin-bottom: 25px;
+            }
+
+            .size-option {
+                padding: 15px 12px;
+                font-size: 1.1rem;
+                font-weight: bold;
+                border-radius: 8px;
+            }
+
+            .buy-button {
+                padding: 18px;
+                font-size: 1.2rem;
+                border-radius: 8px;
+                margin-top: 25px;
+            }
+
+            .additional-info h3 {
+                font-size: 1.2rem;
+                padding: 15px 0;
+            }
+
+            .additional-info-content {
+                font-size: 1rem;
+                line-height: 1.6;
+                padding: 10px 0;
+            }
+
+            .related-products {
+                margin-top: 30px;
+                padding: 0 10px;
+            }
+
+            .related-products h2 {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+            }
+
+            .related-product {
+                width: 100%;
+                max-width: 300px;
+                margin: 0 auto 15px auto;
+                padding: 15px;
+                border-radius: 10px;
+            }
+
+            /* Optimize for very small screens */
+            @media (max-width: 480px) {
+                body {
+                    padding-left: 15px;
+                    padding-right: 15px;
+                }
+
+                .header-title {
+                    font-size: 22px;
+                }
+
+                .product-info {
+                    padding: 15px;
+                }
+
+                .product-info h1 {
+                    font-size: 1.8rem;
+                }
+
+                .price {
+                    font-size: 1.6rem;
+                }
+
+                .size-option {
+                    padding: 12px 8px;
+                    font-size: 1rem;
+                }
+
+                .buy-button {
+                    padding: 15px;
+                    font-size: 1.1rem;
+                }
+            }
         }
 
-        .related-product img {
-            width: 100%;
-        }
-    }
-
-    /* Cart icon styles */
-    .cart-icon {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        color: #333;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        z-index: 1000;
-        transition: all 0.3s ease;
-    }
-
-    .cart-icon svg {
-        width: 28px;
-        height: 28px;
-    }
-
-    .cart-icon:hover {
-        color: #666;
-        transform: scale(1.1);
-    }
-
-    .cart-count {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background-color: #dc3545;
-        color: white;
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.8rem;
-        font-weight: bold;
-    }
     </style>
 </head>
 <body>
 
-    <!-- Header for the Product Page -->
-    <div class="product-header">
-        <h1>{{ product.name }}</h1>
+    <!-- Header Bar -->
+    <div class="header-bar">
+        <div class="hamburger" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <div class="header-title">
+            {{ product.name }}
+        </div>
+        
+        <a href="{% url 'cart_detail' %}" class="cart-icon">
+            <img src="{% static 'landing/shoppingbag.png' %}" alt="Shopping Bag">
+            {% if cart and cart|length > 0 %}
+                <span class="cart-count">{{ cart|length }}</span>
+            {% endif %}
+        </a>
     </div>
+
+    <!-- Mobile Navigation Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <ul>
+            <li><a href="{% url 'landing' %}">Home</a></li>
+            <li><a href="{% url 'shop' %}">Shop</a></li>
+            <li><a href="{% url 'musik_events' %}">Musik & Events</a></li>
+            <li><a href="{% url 'uberuns' %}">Über uns</a></li>
+            <li><a href="{% url 'impressum' %}">Impressum</a></li>
+        </ul>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="toggleMobileMenu()"></div>
 
     <div class="product-detail-page">
         <!-- Image Gallery Section -->
@@ -428,6 +711,24 @@
                 cartCounter.textContent = count;
             }
         }
+    });
+
+    // Mobile Navigation Functions
+    function toggleMobileMenu() {
+        const hamburger = document.querySelector('.hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const overlay = document.getElementById('overlay');
+        
+        hamburger.classList.toggle('active');
+        mobileMenu.classList.toggle('active');
+        overlay.classList.toggle('active');
+    }
+
+    // Close mobile menu when clicking on a link
+    document.querySelectorAll('.mobile-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            toggleMobileMenu();
+        });
     });
 </script>
 
